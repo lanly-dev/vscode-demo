@@ -1,4 +1,4 @@
-.vscode-test/
+.token
 *.vsix
 dist
 node_modules
