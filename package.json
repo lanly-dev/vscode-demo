@@ -1,6 +1,6 @@
 {
-  "name": "demo",
-  "displayName": "",
+  "name": "sidekick",
+  "displayName": "Sidekick",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -10,21 +10,21 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:demo.oneLine"
+    "onCommand:sidekick.oneLine"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "demo.oneLine",
+        "command": "sidekick.oneLine",
         "title": "One Line"
       }
     ],
     "configuration": [
       {
-        "title": "demo",
+        "title": "sidekick",
         "properties": {
-          "demo.openAiApiKey": {
+          "sidekick.openAiApiKey": {
             "type": "string",
             "description": "OpenAI API key"
           }
@@ -43,16 +43,16 @@
   },
   "devDependencies": {
     "@types/node": "17.x",
-    "@types/vscode": "^1.63.1",
-    "@typescript-eslint/eslint-plugin": "^5.9.0",
-    "@typescript-eslint/parser": "^5.9.0",
-    "eslint": "^8.6.0",
-    "ts-loader": "^9.2.6",
-    "typescript": "^4.5.4",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
+    "@types/vscode": "^1.65.0",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
+    "eslint": "^8.11.0",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.2",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "axios": "^0.24.0"
+    "gpt-x": "^1.1.3"
   }
 }

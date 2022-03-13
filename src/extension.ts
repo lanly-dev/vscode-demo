@@ -1,13 +1,10 @@
-import { ExtensionContext, commands, window } from 'vscode'
-import OpenAi from './openAi'
+import { ExtensionContext, commands, } from 'vscode'
+import OpenAi from './ai'
 
 export function activate(context: ExtensionContext) {
-
-  let disposable = commands.registerCommand('demo.oneLine', () => {
-    OpenAi.oneLine()
-  })
-
+  OpenAi.init()
+  let disposable = commands.registerCommand('sidekick.oneLine', () => OpenAi.oneLine('helloworld'))
   context.subscriptions.push(disposable)
 }
 
-// export function deactivate() {}
+export function deactivate() { }
