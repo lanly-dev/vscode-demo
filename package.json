@@ -17,7 +17,7 @@
     "commands": [
       {
         "command": "sidekick.oneLine",
-        "title": "One Line"
+        "title": "Sidekick: One Line"
       }
     ],
     "configuration": [
@@ -53,6 +53,6 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "gpt-x": "^1.1.3"
+    "axios": "^0.26.1"
   }
 }
