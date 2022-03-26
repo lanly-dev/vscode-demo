@@ -7,7 +7,7 @@
   "description": "",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.65.0"
   },
   "categories": [
     "Other"
@@ -48,7 +48,18 @@
         "properties": {
           "sidekick.openAiApiKey": {
             "type": "string",
+            "default": null,
             "description": "OpenAI API key"
+          }
+        }
+      },
+      {
+        "title": "sidekick",
+        "properties": {
+          "sidekick.enablePredict": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable prediction"
           }
         }
       }

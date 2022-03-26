@@ -11,11 +11,19 @@ export default class AI {
     this.openai = undefined
     const apiKey = <string>workspace.getConfiguration().get('sidekick.openAiApiKey')
     if (!apiKey) {
-      window.showInformationMessage('Please add OpenAI token to the settings', 'Setting').then(() => {
-        commands.executeCommand('workbench.action.openSettings', 'sidekick.openAiApiKey')
-      })
+      window
+        .showInformationMessage('Please add OpenAI token to the settings', 'Setting')
+        .then(() => commands.executeCommand('workbench.action.openSettings', 'sidekick.openAiApiKey'))
       return
     }
+
+    if (!apiKey.includes('sk-') || apiKey.length != 51) {
+      window
+        .showErrorMessage('Invalid OpenAI token format', 'Setting')
+        .then(() => commands.executeCommand('workbench.action.openSettings', 'sidekick.openAiApiKey'))
+      return
+    }
+
     this.openai = new OpenAIApi(new Configuration({ apiKey }))
   }
 
@@ -24,7 +32,7 @@ export default class AI {
     if (!this.openai) return
 
     const prompt = 'Use list comprehension to convert this into one line of JavaScript:\n\n' + input
-    const response = await this.openai.createCompletion("code-davinci-002", {
+    const response = await this.openai.createCompletion('code-davinci-002', {
       prompt,
       temperature: 0,
       max_tokens: 60,
@@ -48,7 +56,7 @@ export default class AI {
     if (!this.openai) return
 
     const prompt = 'Refactor this code:\n\n' + input
-    const response = await this.openai.createCompletion("code-davinci-002", {
+    const response = await this.openai.createCompletion('code-davinci-002', {
       prompt,
       temperature: 0,
       max_tokens: 60,
