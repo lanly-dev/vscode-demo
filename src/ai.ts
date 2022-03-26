@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { window, workspace } from 'vscode'
+import { commands, window, workspace } from 'vscode'
 import { Configuration, OpenAIApi } from 'openai'
 // Not safe, for expired certificate
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
 export default class AI {
   public static openai: OpenAIApi | undefined
 
@@ -10,27 +11,51 @@ export default class AI {
     this.openai = undefined
     const apiKey = <string>workspace.getConfiguration().get('sidekick.openAiApiKey')
     if (!apiKey) {
-      window.showInformationMessage('Please add token to the settings')
+      window.showInformationMessage('Please add OpenAI token to the settings', 'Setting').then(() => {
+        commands.executeCommand('workbench.action.openSettings', 'sidekick.openAiApiKey')
+      })
       return
     }
     this.openai = new OpenAIApi(new Configuration({ apiKey }))
   }
 
-  public static async oneLine(prompt: string) {
+  public static async oneLine(input: string) {
     this.init()
     if (!this.openai) return
 
-    const completion = await this.openai.createCompletion('text-davinci-001', {
-      prompt: 'Hello world'
+    const prompt = 'Use list comprehension to convert this into one line of JavaScript:\n\n' + input
+    const response = await this.openai.createCompletion("code-davinci-002", {
+      prompt,
+      temperature: 0,
+      max_tokens: 60,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0
     })
-    console.log(completion.data.choices![0].text)
+    return response
   }
 
-  public static async predict() {
+  public static async predict(prompt: string) {
+    this.init()
+    if (!this.openai) return
 
+    const completion = await this.openai.createCompletion('text-davinci-001', { prompt })
+    return completion.data.choices
   }
 
-  public static async refactor() {
-    
+  public static async refactor(input: string) {
+    this.init()
+    if (!this.openai) return
+
+    const prompt = 'Refactor this code:\n\n' + input
+    const response = await this.openai.createCompletion("code-davinci-002", {
+      prompt,
+      temperature: 0,
+      max_tokens: 60,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0
+    })
+    return response
   }
 }

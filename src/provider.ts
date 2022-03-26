@@ -2,12 +2,12 @@ import {
   CancellationToken,
   InlineCompletionContext,
   InlineCompletionItem,
-  InlayHintsProvider,
   Position,
   Range,
   TextDocument
 } from 'vscode'
 
+import AI from './ai'
 export default class Provider {
 
   async provideInlineCompletionItems(
@@ -16,10 +16,13 @@ export default class Provider {
     context: InlineCompletionContext,
     token: CancellationToken
   ): Promise<InlineCompletionItem[]> {
-    console.log('provideInlineCompletionItems triggered');
-    const lineBefore = document.lineAt(position.line - 1).text;
-    console.log(lineBefore)
-    return [{ insertText: 'helloworld', range: new Range(position.line, 0, position.line, 10) }]
-  }
+    const posLine = position.line
+    const text = document.lineAt(posLine).text;
+    if (!text) return []
 
+    const choices = await AI.predict(text)
+    if (!choices?.length) return []
+    const results = choices.map(text => { return { innerText: text, range: new Range(posLine, 0, posLine, 10) } })
+    return results
+  }
 }
