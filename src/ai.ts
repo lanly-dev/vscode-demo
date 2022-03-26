@@ -1,31 +1,28 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { window, workspace } from 'vscode'
-//@ts-ignore
-import { OpenAI } from 'gpt-x'
-import axios from 'axios'
-
+import { Configuration, OpenAIApi } from 'openai'
+// Not safe, for expired certificate
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 export default class AI {
-  public static key: string | undefined
+  public static openai: OpenAIApi | undefined
 
   public static init() {
-    this.key = workspace.getConfiguration().get('sidekick.openAiApiKey')
-    !this.key && window.showInformationMessage('Please add token to the settings')
+    this.openai = undefined
+    const apiKey = <string>workspace.getConfiguration().get('sidekick.openAiApiKey')
+    if (!apiKey) {
+      window.showInformationMessage('Please add token to the settings')
+      return
+    }
+    this.openai = new OpenAIApi(new Configuration({ apiKey }))
   }
 
   public static async oneLine(prompt: string) {
     this.init()
-    if (!this.key) return
-    console.log(this.key)
-    const { Configuration, OpenAIApi } = require('openai')
+    if (!this.openai) return
 
-    const configuration = new Configuration({
-      apiKey: this.key
-    })
-    const openai = new OpenAIApi(configuration)
-
-    const completion = await openai.createCompletion('text-davinci-001', {
+    const completion = await this.openai.createCompletion('text-davinci-001', {
       prompt: 'Hello world'
     })
-    console.log(completion.data.choices[0].text)
+    console.log(completion.data.choices![0].text)
   }
 }
