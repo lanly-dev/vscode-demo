@@ -2,13 +2,13 @@ import {
   CancellationToken,
   InlineCompletionContext,
   InlineCompletionItem,
-  InlineCompletionItemProvider,
+  InlayHintsProvider,
   Position,
   Range,
   TextDocument
 } from 'vscode'
 
-class Provider implements InlineCompletionItemProvider {
+export default class Provider {
 
   async provideInlineCompletionItems(
     document: TextDocument,
@@ -16,18 +16,10 @@ class Provider implements InlineCompletionItemProvider {
     context: InlineCompletionContext,
     token: CancellationToken
   ): Promise<InlineCompletionItem[]> {
-
-    let someTrackingIdCounter = 0;
-
     console.log('provideInlineCompletionItems triggered');
-
-
     const lineBefore = document.lineAt(position.line - 1).text;
     console.log(lineBefore)
-    const text = 'helloworld'
-    return [{
-      text,
-      range: new Range(position.line, 0, position.line, 10),
-    }]
+    return [{ insertText: 'helloworld', range: new Range(position.line, 0, position.line, 10) }]
   }
+
 }

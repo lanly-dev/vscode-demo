@@ -13,7 +13,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:sidekick.oneLine"
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -21,6 +21,18 @@
       {
         "command": "sidekick.oneLine",
         "title": "Sidekick: One Line"
+      },
+      {
+        "command": "sidekick.predict",
+        "title": "Sidekick: One Line"
+      },
+      {
+        "command": "sidekick.refactor",
+        "title": "Sidekick: refactor"
+      },
+      {
+        "command": "sidekick.enablePredict",
+        "title": "Sidekick: enablePredict"
       }
     ],
     "menus": {
@@ -59,9 +71,9 @@
     "@types/vscode": "^1.65.0",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
-    "eslint": "^8.11.0",
+    "eslint": "^8.12.0",
     "ts-loader": "^9.2.8",
-    "typescript": "^4.6.2",
+    "typescript": "^4.6.3",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
   },

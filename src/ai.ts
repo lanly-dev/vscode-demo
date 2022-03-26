@@ -25,4 +25,12 @@ export default class AI {
     })
     console.log(completion.data.choices![0].text)
   }
+
+  public static async predict() {
+
+  }
+
+  public static async refactor() {
+    
+  }
 }
