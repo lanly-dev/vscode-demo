@@ -52,10 +52,10 @@
       {
         "title": "sidekick",
         "properties": {
-          "sidekick.enablePredict": {
+          "sidekick.enablePrediction": {
             "type": "boolean",
             "default": true,
-            "description": "Enable prediction"
+            "description": "Enable prediction for workspace"
           }
         }
       }

@@ -2,9 +2,10 @@ import { ExtensionContext, commands, languages, workspace } from 'vscode'
 import OpenAi from './ai'
 import icProvider from './Provider/inlineCompletion'
 import Buttons from './buttons'
+let buttons: Buttons | null = null
 
 export function activate(context: ExtensionContext) {
-  const buttons = new Buttons()
+  buttons = new Buttons()
   const icp = new icProvider()
   const rc = commands.registerCommand
   OpenAi.init()
@@ -19,10 +20,11 @@ export function activate(context: ExtensionContext) {
   ])
 }
 
-function enablePrediction() {
+async function enablePrediction() {
   const cf = workspace.getConfiguration()
   const flag = cf.get('sidekick.enablePrediction')
-  cf.update('sidekick.enablePrediction', !flag)
+  await cf.update('sidekick.enablePrediction', !flag)
+  if (buttons) buttons.refresh()
 }
 
 export function deactivate() {}

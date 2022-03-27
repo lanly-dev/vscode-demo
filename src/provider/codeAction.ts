@@ -1,9 +1,9 @@
 import { CodeAction, CodeActionKind, CodeActionProvider, Range, TextDocument, WorkspaceEdit } from 'vscode'
 const COMMAND = 'code-actions-sample.command'
 export default class Emojizer implements CodeActionProvider {
-  public static readonly providedCodeActionKinds = [CodeActionKind.QuickFix]
+  static readonly providedCodeActionKinds = [CodeActionKind.QuickFix]
 
-  public provideCodeActions(document: TextDocument, range: Range): CodeAction[] | undefined {
+  provideCodeActions(document: TextDocument, range: Range): CodeAction[] | undefined {
     if (!this.isAtStartOfSmiley(document, range)) return
 
     const replaceWithSmileyCatFix = this.createFix(document, range, '😺')

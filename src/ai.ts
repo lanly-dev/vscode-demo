@@ -5,9 +5,9 @@ import { Configuration, OpenAIApi } from 'openai'
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 export default class AI {
-  public static openai: OpenAIApi | undefined
+  static openai: OpenAIApi | undefined
 
-  public static init() {
+  static init() {
     console.log('testing')
     this.openai = undefined
     const apiKey = <string>workspace.getConfiguration().get('sidekick.openAiApiKey')
@@ -28,7 +28,7 @@ export default class AI {
     this.openai = new OpenAIApi(new Configuration({ apiKey }))
   }
 
-  public static async oneLine(input: string) {
+  static async oneLine(input: string) {
     this.init()
     if (!this.openai) return
 
@@ -44,7 +44,7 @@ export default class AI {
     return response
   }
 
-  public static async predict(prompt: string) {
+  static async predict(prompt: string) {
     this.init()
     if (!this.openai) return
 
@@ -52,7 +52,7 @@ export default class AI {
     return completion.data.choices
   }
 
-  public static async refactor(input: string) {
+  static async refactor(input: string) {
     this.init()
     if (!this.openai) return
 
