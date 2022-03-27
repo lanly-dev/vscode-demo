@@ -8,7 +8,6 @@ export default class AI {
   static openai: OpenAIApi | undefined
 
   static init() {
-    console.log('testing')
     this.openai = undefined
     const apiKey = <string>workspace.getConfiguration().get('sidekick.openAiApiKey')
     if (!apiKey) {

@@ -1,5 +1,4 @@
-import { CodeAction, CodeActionKind, CodeActionProvider, Range, TextDocument, WorkspaceEdit } from 'vscode'
-const COMMAND = 'code-actions-sample.command'
+import { CodeAction, CodeActionKind, CodeActionProvider, commands, Range, TextDocument, WorkspaceEdit } from 'vscode'
 export default class Emojizer implements CodeActionProvider {
   static readonly providedCodeActionKinds = [CodeActionKind.QuickFix]
 
@@ -34,11 +33,12 @@ export default class Emojizer implements CodeActionProvider {
   }
 
   private createCommand(): CodeAction {
-    const action = new CodeAction('Learn more...', CodeActionKind.Empty)
+    const action = new CodeAction('Sidekick setting', CodeActionKind.Empty)
     action.command = {
-      command: COMMAND,
-      title: 'Learn more about emojis',
-      tooltip: 'This will open the unicode emoji page.'
+      command: 'workbench.action.openSettings',
+      title: 'Sidekick setting',
+      tooltip: 'Go to setting.',
+      arguments: ['sidekick']
     }
     return action
   }
