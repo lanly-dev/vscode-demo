@@ -10,11 +10,6 @@ import {
 
 export default class Provider implements CodeActionProvider {
   static readonly providedCodeActionKinds = [CodeActionKind.QuickFix]
-  codeLens: CodeLensProvider
-
-  constructor(codeLens: CodeLensProvider) {
-    this.codeLens = codeLens
-  }
 
   provideCodeActions(document: TextDocument, range: Range): CodeAction[] | undefined {
     if (!this.isFunction(document, range)) return
@@ -28,14 +23,7 @@ export default class Provider implements CodeActionProvider {
   }
 
   private refactor(document: TextDocument, range: Range): CodeAction {
-    const fix = new CodeAction(`Sidekick refactor function`, CodeActionKind.Refactor)
-    fix.edit = new WorkspaceEdit()
-    fix.edit.replace(document.uri, new Range(range.start, range.start.translate(0, 2)), 'something')
-    return fix
-  }
-
-  private calComplexity(document: TextDocument, range: Range): CodeAction {
-    const fix = new CodeAction(`Sidekick calculate complexity`, CodeActionKind.Empty)
+    const fix = new CodeAction(`Sidekick: refactor function`, CodeActionKind.Refactor)
     fix.edit = new WorkspaceEdit()
     fix.edit.replace(document.uri, new Range(range.start, range.start.translate(0, 2)), 'something')
     return fix
@@ -45,7 +33,7 @@ export default class Provider implements CodeActionProvider {
     const action = new CodeAction('Sidekick setting', CodeActionKind.Empty)
     action.command = {
       command: 'workbench.action.openSettings',
-      title: 'Sidekick setting',
+      title: 'Sidekick: setting',
       tooltip: 'Go to setting.',
       arguments: ['sidekick']
     }

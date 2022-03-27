@@ -52,6 +52,16 @@
       {
         "title": "sidekick",
         "properties": {
+          "sidekick.enableComplexity": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable complexity CodeLens"
+          }
+        }
+      },
+      {
+        "title": "sidekick",
+        "properties": {
           "sidekick.enablePrediction": {
             "type": "boolean",
             "default": true,

@@ -8,7 +8,6 @@ let buttons: Buttons | null = null
 
 export function activate(context: ExtensionContext) {
   buttons = new Buttons
-  const codeLens = new ClProvider
   const { providedCodeActionKinds } = CaProvider
   OpenAi.init()
   const rc = commands.registerCommand
@@ -19,17 +18,17 @@ export function activate(context: ExtensionContext) {
     rc('sidekick.refNext', () => OpenAi.oneLine('helloworld')),
     rc('sidekick.refPrev', () => OpenAi.oneLine('helloworld')),
     rc('sidekick.refCancel', () => OpenAi.oneLine('helloworld')),
-    languages.registerCodeActionsProvider('*', new CaProvider(codeLens), { providedCodeActionKinds }),
-    languages.registerCodeLensProvider('*', codeLens),
+    languages.registerCodeActionsProvider('*', new CaProvider, { providedCodeActionKinds }),
+    languages.registerCodeLensProvider('*', new ClProvider),
     languages.registerInlineCompletionItemProvider({ pattern: '**' }, new IcProvider())
   ])
 
 }
 
 async function enablePrediction() {
-  const cf = workspace.getConfiguration()
-  const flag = cf.get('sidekick.enablePrediction')
-  await cf.update('sidekick.enablePrediction', !flag)
+  const cf = workspace.getConfiguration('sidekick')
+  const flag = cf.get('enablePrediction')
+  await cf.update('enablePrediction', !flag)
   if (buttons) buttons.refresh()
 }
 
