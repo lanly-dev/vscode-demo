@@ -1,38 +1,47 @@
-import { CodeAction, CodeActionKind, CodeActionProvider, commands, Range, TextDocument, WorkspaceEdit } from 'vscode'
-export default class Emojizer implements CodeActionProvider {
+import {
+  CodeAction,
+  CodeActionKind,
+  CodeActionProvider,
+  CodeLensProvider,
+  Range,
+  TextDocument,
+  WorkspaceEdit
+} from 'vscode'
+
+export default class Provider implements CodeActionProvider {
   static readonly providedCodeActionKinds = [CodeActionKind.QuickFix]
+  codeLens: CodeLensProvider
+
+  constructor(codeLens: CodeLensProvider) {
+    this.codeLens = codeLens
+  }
 
   provideCodeActions(document: TextDocument, range: Range): CodeAction[] | undefined {
-    if (!this.isAtStartOfSmiley(document, range)) return
-
-    const replaceWithSmileyCatFix = this.createFix(document, range, '😺')
-
-    const replaceWithSmileyFix = this.createFix(document, range, '😀')
-    // Marking a single fix as `preferred` means that users can apply it with a
-    // single keyboard shortcut using the `Auto Fix` command.
-    replaceWithSmileyFix.isPreferred = true
-
-    const replaceWithSmileyHankyFix = this.createFix(document, range, '💩')
-
-    const commandAction = this.createCommand()
-
-    return [replaceWithSmileyCatFix, replaceWithSmileyFix, replaceWithSmileyHankyFix, commandAction]
+    if (!this.isFunction(document, range)) return
+    return [this.refactor(document, range), this.goToSetting()]
   }
 
-  private isAtStartOfSmiley(document: TextDocument, range: Range) {
+  private isFunction(document: TextDocument, range: Range) {
     const start = range.start
     const line = document.lineAt(start.line)
-    return line.text[start.character] === ':' && line.text[start.character + 1] === ')'
+    return line.text.includes('function')
   }
 
-  private createFix(document: TextDocument, range: Range, emoji: string): CodeAction {
-    const fix = new CodeAction(`Convert to ${emoji}`, CodeActionKind.QuickFix)
+  private refactor(document: TextDocument, range: Range): CodeAction {
+    const fix = new CodeAction(`Sidekick refactor function`, CodeActionKind.Refactor)
     fix.edit = new WorkspaceEdit()
-    fix.edit.replace(document.uri, new Range(range.start, range.start.translate(0, 2)), emoji)
+    fix.edit.replace(document.uri, new Range(range.start, range.start.translate(0, 2)), 'something')
     return fix
   }
 
-  private createCommand(): CodeAction {
+  private calComplexity(document: TextDocument, range: Range): CodeAction {
+    const fix = new CodeAction(`Sidekick calculate complexity`, CodeActionKind.Empty)
+    fix.edit = new WorkspaceEdit()
+    fix.edit.replace(document.uri, new Range(range.start, range.start.translate(0, 2)), 'something')
+    return fix
+  }
+
+  private goToSetting(): CodeAction {
     const action = new CodeAction('Sidekick setting', CodeActionKind.Empty)
     action.command = {
       command: 'workbench.action.openSettings',

@@ -1,15 +1,17 @@
 import { ExtensionContext, commands, languages, workspace } from 'vscode'
 import Buttons from './buttons'
 import CaProvider from './provider/codeAction'
-import ClProvider from './provider/codelens'
+import ClProvider from './provider/codeLens'
 import IcProvider from './provider/inlineCompletion'
 import OpenAi from './ai'
 let buttons: Buttons | null = null
 
 export function activate(context: ExtensionContext) {
-  buttons = new Buttons()
-  const rc = commands.registerCommand
+  buttons = new Buttons
+  const codeLens = new ClProvider
+  const { providedCodeActionKinds } = CaProvider
   OpenAi.init()
+  const rc = commands.registerCommand
   context.subscriptions.concat([
     rc('sidekick.oneLine', () => OpenAi.oneLine('helloworld')),
     rc('sidekick.enablePrediction', () => enablePrediction()),
@@ -17,8 +19,8 @@ export function activate(context: ExtensionContext) {
     rc('sidekick.refNext', () => OpenAi.oneLine('helloworld')),
     rc('sidekick.refPrev', () => OpenAi.oneLine('helloworld')),
     rc('sidekick.refCancel', () => OpenAi.oneLine('helloworld')),
-    languages.registerCodeActionsProvider('*', new CaProvider),
-    languages.registerCodeLensProvider('*', new ClProvider),
+    languages.registerCodeActionsProvider('*', new CaProvider(codeLens), { providedCodeActionKinds }),
+    languages.registerCodeLensProvider('*', codeLens),
     languages.registerInlineCompletionItemProvider({ pattern: '**' }, new IcProvider())
   ])
 
