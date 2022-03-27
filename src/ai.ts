@@ -8,6 +8,7 @@ export default class AI {
   public static openai: OpenAIApi | undefined
 
   public static init() {
+    console.log('testing')
     this.openai = undefined
     const apiKey = <string>workspace.getConfiguration().get('sidekick.openAiApiKey')
     if (!apiKey) {
@@ -17,7 +18,7 @@ export default class AI {
       return
     }
 
-    if (!apiKey.includes('sk-') || apiKey.length != 51) {
+    if (!apiKey.includes('sk-') || apiKey.length !== 51) {
       window
         .showErrorMessage('Invalid OpenAI token format', 'Setting')
         .then(() => commands.executeCommand('workbench.action.openSettings', 'sidekick.openAiApiKey'))

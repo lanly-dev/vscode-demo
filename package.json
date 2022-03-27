@@ -20,19 +20,15 @@
     "commands": [
       {
         "command": "sidekick.oneLine",
-        "title": "Sidekick: One Line"
-      },
-      {
-        "command": "sidekick.predict",
-        "title": "Sidekick: One Line"
+        "title": "Sidekick: one Line"
       },
       {
         "command": "sidekick.refactor",
         "title": "Sidekick: refactor"
       },
       {
-        "command": "sidekick.enablePredict",
-        "title": "Sidekick: enablePredict"
+        "command": "sidekick.enablePrediction",
+        "title": "Sidekick: enable prediction"
       }
     ],
     "menus": {

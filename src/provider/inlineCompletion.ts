@@ -1,6 +1,14 @@
-import { CancellationToken, InlineCompletionContext, InlineCompletionItem, Position, Range, TextDocument } from 'vscode'
+import {
+  CancellationToken,
+  InlineCompletionContext,
+  InlineCompletionItem,
+  Position,
+  Range,
+  TextDocument,
+  workspace
+} from 'vscode'
+import AI from '../ai'
 
-import AI from './ai'
 export default class Provider {
   async provideInlineCompletionItems(
     document: TextDocument,
@@ -10,7 +18,11 @@ export default class Provider {
   ): Promise<InlineCompletionItem[]> {
     const posLine = position.line
     const text = document.lineAt(posLine).text
-    if (!text) return []
+
+    const cf = workspace.getConfiguration()
+    const flag = cf.get('sidekick.enablePrediction')
+
+    if (!text || !flag) return []
 
     const choices = await AI.predict(text)
     if (!choices?.length) return []
