@@ -1,11 +1,11 @@
 import { ExtensionContext, commands, languages, workspace } from 'vscode'
 import OpenAi from './ai'
-import Provider from './Provider'
+import icProvider from './Provider/inlineCompletion'
 import Buttons from './buttons'
 
 export function activate(context: ExtensionContext) {
   const buttons = new Buttons()
-  const provider = new Provider()
+  const icp = new icProvider()
   const rc = commands.registerCommand
   OpenAi.init()
   context.subscriptions.concat([
@@ -15,7 +15,7 @@ export function activate(context: ExtensionContext) {
     rc('sidekick.refNext', () => OpenAi.oneLine('helloworld')),
     rc('sidekick.refPrev', () => OpenAi.oneLine('helloworld')),
     rc('sidekick.refCancel', () => OpenAi.oneLine('helloworld')),
-    languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider)
+    languages.registerInlineCompletionItemProvider({ pattern: '**' }, icp)
   ])
 }
 
