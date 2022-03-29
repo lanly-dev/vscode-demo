@@ -19,26 +19,34 @@
   "contributes": {
     "commands": [
       {
+        "command": "sidekick.setting",
+        "title": "Sidekick: open setting"
+      },
+      {
         "command": "sidekick.oneLine",
         "title": "Sidekick: one Line"
+      },
+      {
+        "command": "sidekick.prediction.enable",
+        "title": "Sidekick: enable prediction"
       },
       {
         "command": "sidekick.refactor",
         "title": "Sidekick: refactor"
       },
       {
-        "command": "sidekick.addRef",
-        "title": "Sidekick: addRef"
+        "command": "sidekick.refactor.start",
+        "title": "Sidekick: start refactor"
       },
       {
-        "command": "sidekick.enablePrediction",
-        "title": "Sidekick: enable prediction"
+        "command": "sidekick.refactor.cancel",
+        "title": "Sidekick: cancel refactor"
       }
     ],
     "menus": {
       "editor/inlineCompletions/actions": [
         {
-          "command": "sidekick.oneLine"
+          "command": "sidekick.setting"
         }
       ]
     },

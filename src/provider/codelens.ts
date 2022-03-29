@@ -23,7 +23,7 @@ export default class Provider implements CodeLensProvider {
   readonly onDidChangeCodeLenses: Event<void> = this._onDidChangeCodeLenses.event
 
   constructor() {
-    workspace.onDidChangeConfiguration((_) => {
+    workspace.onDidChangeConfiguration(_ => {
       this._onDidChangeCodeLenses.fire()
     })
   }
@@ -52,52 +52,64 @@ export default class Provider implements CodeLensProvider {
       // const bigO = await Ai.complexity(content)
 
       if (range) {
-        this.codeLenses.push(new CodeLens(range, {
-          title: 'bigO'!,
-          tooltip: endInfo?.text,
-          command: ''
-        }))
+        this.codeLenses.push(
+          new CodeLens(range, {
+            title: 'bigO'!,
+            tooltip: endInfo?.text,
+            command: ''
+          })
+        )
         if (this.currRefRange && this.currRefRange.start.line === range.start.line) continue
-        this.codeLenses.push(new CodeLens(range, {
-          title: 'refactor'!,
-          command: 'sidekick.addRef',
-          arguments: [range]
-        }))
+        this.codeLenses.push(
+          new CodeLens(range, {
+            title: 'refactor'!,
+            command: 'sidekick.refactor.start',
+            arguments: [range]
+          })
+        )
       }
     }
     if (this.currRefRange) {
-      this.codeLenses.push(new CodeLens(this.currRefRange, {
-        title: 'Cancel'!,
-        command: ''
-      }))
+      this.codeLenses.push(
+        new CodeLens(this.currRefRange, {
+          title: 'Previous'!,
+          command: 'sidekick.refactor.previous'
+        })
+      )
+      this.codeLenses.push(
+        new CodeLens(this.currRefRange, {
+          title: 'Next'!,
+          command: 'sidekick.refactor.next'
+        })
+      )
+      this.codeLenses.push(
+        new CodeLens(this.currRefRange, {
+          title: 'Cancel'!,
+          command: 'sidekick.refactor.cancel'
+        })
+      )
     }
     return this.codeLenses
   }
 
-  addRef(range: Range) {
+  startRefactor(range: Range) {
     this.currRefRange = range
   }
 
-  nextRef() {
+  nextRefactor() {
     // save
-
   }
 
-  prevRef() {
+  prevRefactor() {}
 
+  cancelRefactor() {
+    this.currRefRange = null
+    this._onDidChangeCodeLenses.fire()
   }
 
-  cancleRef() {
+  replace() {}
 
-  }
-
-  replace() {
-
-  }
-
-  select() {
-
-  }
+  select() {}
 
   private findEnd(document: TextDocument, fullText: string, startPosition: Position) {
     const endRegex = new RegExp(this.endRegex)
@@ -110,7 +122,7 @@ export default class Provider implements CodeLensProvider {
       const filling = document.getText(new Range(startPosition, endPosition))
       const openCount = (filling.match(this.startRegex) || []).length
       const endCount = (filling.match(this.endRegex) || []).length
-      if (openCount == endCount) return { position: endPosition, text: filling }
+      if (openCount === endCount) return { position: endPosition, text: filling }
     }
   }
 }

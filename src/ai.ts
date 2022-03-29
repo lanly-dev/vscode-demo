@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { commands, window, workspace } from 'vscode'
 import { Configuration, OpenAIApi } from 'openai'
+import { window, workspace } from 'vscode'
+import Utility from './utility'
 // Not safe, for expired certificate
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
@@ -13,14 +14,14 @@ export default class AI {
     if (!apiKey) {
       window
         .showInformationMessage('Please add OpenAI token to the settings', 'Setting')
-        .then(() => commands.executeCommand('workbench.action.openSettings', 'sidekick.openAiApiKey'))
+        .then(() => Utility.openSetting('sidekick.openAiApiKey'))
       return
     }
 
     if (!apiKey.includes('sk-') || apiKey.length !== 51) {
       window
         .showErrorMessage('Invalid OpenAI token format', 'Setting')
-        .then(() => commands.executeCommand('workbench.action.openSettings', 'sidekick.openAiApiKey'))
+        .then(() => Utility.openSetting('sidekick.openAiApiKey'))
       return
     }
 
@@ -32,13 +33,13 @@ export default class AI {
     if (!this.openai) return
 
     const prompt = 'The time complexity of this function is\n\n' + input
-    const response = await this.openai.createCompletion("text-davinci-002", {
+    const response = await this.openai.createCompletion('text-davinci-002', {
       prompt,
       temperature: 0,
       max_tokens: 64,
-      top_p: 1.0,
-      frequency_penalty: 0.0,
-      presence_penalty: 0.0
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0
     })
     console.log(response)
     return response.data.choices?.[0].text?.replaceAll('\n', '')
@@ -84,7 +85,5 @@ export default class AI {
     return response
   }
 
-  static async makeHelper () {
-    
-  }
+  static async makeHelper() {}
 }
