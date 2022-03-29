@@ -27,6 +27,23 @@ export default class AI {
     this.openai = new OpenAIApi(new Configuration({ apiKey }))
   }
 
+  static async complexity(input: string) {
+    this.init()
+    if (!this.openai) return
+
+    const prompt = 'The time complexity of this function is\n\n' + input
+    const response = await this.openai.createCompletion("text-davinci-002", {
+      prompt,
+      temperature: 0,
+      max_tokens: 64,
+      top_p: 1.0,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0
+    })
+    console.log(response)
+    return response.data.choices?.[0].text?.replaceAll('\n', '')
+  }
+
   static async oneLine(input: string) {
     this.init()
     if (!this.openai) return
@@ -65,5 +82,9 @@ export default class AI {
       presence_penalty: 0
     })
     return response
+  }
+
+  static async makeHelper () {
+    
   }
 }

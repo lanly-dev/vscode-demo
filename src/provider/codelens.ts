@@ -10,6 +10,8 @@ import {
   workspace
 } from 'vscode'
 
+import Ai from '../ai'
+
 export default class Provider implements CodeLensProvider {
   private codeLenses: CodeLens[] = []
   private startRegex: RegExp = /\{/g
@@ -19,10 +21,11 @@ export default class Provider implements CodeLensProvider {
 
   constructor() {
     workspace.onDidChangeConfiguration((_) => this._onDidChangeCodeLenses.fire())
+    // clear
   }
 
-  provideCodeLenses(document: TextDocument, token: CancellationToken): CodeLens[] | Thenable<CodeLens[]> {
-    if (!workspace.getConfiguration("sidekick").get("enableComplexity")) return []
+  async provideCodeLenses(document: TextDocument, token: CancellationToken): Promise<CodeLens[]> {
+    if (!workspace.getConfiguration('sidekick').get('enableComplexity')) return []
     this.codeLenses = []
 
     const regex = new RegExp(this.startRegex)
@@ -32,38 +35,60 @@ export default class Provider implements CodeLensProvider {
       const line = document.lineAt(document.positionAt(matches.index).line)
       const indexOf = line.text.indexOf(matches[0])
       const indexOfNon = line.firstNonWhitespaceCharacterIndex
-      console.log('############', line.lineNumber)
 
       const startPosition = new Position(line.lineNumber, indexOf)
       const realStartPosition = new Position(line.lineNumber, indexOfNon)
 
-      const theEnd = this.findEnd(document, fullText, startPosition)
+      // TODO: format tooltip
+      const endInfo = this.findEnd(document, fullText, realStartPosition)
 
-      const range = new Range(realStartPosition, theEnd?.position!)
-      // const range = document.getWordRangeAtPosition(startPosition, new RegExp(this.regex))
+      const range = new Range(realStartPosition, endInfo?.position!)
+      const content = endInfo?.text
+      if (!content) continue
+      // const bigO = await Ai.complexity(content)
+      
       if (range) this.codeLenses.push(new CodeLens(range, {
-        title: 'hello ' + range.start.character + ' ' + range.end.character + ' ' + line.lineNumber,
-        tooltip: theEnd?.text,
+        title: 'bigO'!,
+        tooltip: endInfo?.text,
         command: ''
       }))
     }
     return this.codeLenses
   }
 
-  findEnd(document: TextDocument, fullText: string, startPosition: Position) {
+  private nextRef() {
+    // save
+
+  }
+
+  private prevRef() {
+
+  }
+
+  private cancleRef() {
+
+  }
+
+  private replace() {
+
+  }
+
+  private select() {
+    
+  }
+
+  private findEnd(document: TextDocument, fullText: string, startPosition: Position) {
     const endRegex = new RegExp(this.endRegex)
     let matches
     while ((matches = endRegex.exec(fullText)) !== null) {
       const line = document.lineAt(document.positionAt(matches.index).line)
       const indexOf = line.text.indexOf(matches[0])
       const endPosition = new Position(line.lineNumber, indexOf + 1)
-      console.log('$$$$$$', startPosition.line, line.lineNumber)
       if (startPosition.line > line.lineNumber) continue
-      console.log('$$$$$$2')
       const filling = document.getText(new Range(startPosition, endPosition))
       const openCount = (filling.match(this.startRegex) || []).length
-      const endCount = (filling.match(this.endRegex) || []).length
-      if (openCount == endCount) return { position: endPosition, text: filling}
+      const endCount = (filling.match(this.endRegex) || []).length 
+      if (openCount == endCount) return { position: endPosition, text: filling }
     }
   }
 }
