@@ -9,17 +9,19 @@ let buttons: Buttons | null = null
 export function activate(context: ExtensionContext) {
   buttons = new Buttons
   // const { providedCodeActionKinds } = CaProvider
+  const clp = new ClProvider
   Ai.init()
   const rc = commands.registerCommand
   context.subscriptions.concat([
     rc('sidekick.oneLine', () => Ai.oneLine('helloworld')),
     rc('sidekick.enablePrediction', () => enablePrediction()),
     rc('sidekick.refactor', () => Ai.oneLine('helloworld')),
+    rc('sidekick.addRef', (range) => clp.addRef(range)),
     rc('sidekick.refNext', () => Ai.oneLine('helloworld')),
     rc('sidekick.refPrev', () => Ai.oneLine('helloworld')),
     rc('sidekick.refCancel', () => Ai.oneLine('helloworld')),
     // languages.registerCodeActionsProvider('*', new CaProvider, { providedCodeActionKinds }),
-    languages.registerCodeLensProvider('*', new ClProvider),
+    languages.registerCodeLensProvider('*', clp),
     languages.registerInlineCompletionItemProvider({ pattern: '**' }, new IcProvider())
   ])
 
@@ -32,4 +34,4 @@ async function enablePrediction() {
   if (buttons) buttons.refresh()
 }
 
-export function deactivate() {}
+export function deactivate() { }

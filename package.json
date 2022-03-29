@@ -27,6 +27,10 @@
         "title": "Sidekick: refactor"
       },
       {
+        "command": "sidekick.addRef",
+        "title": "Sidekick: addRef"
+      },
+      {
         "command": "sidekick.enablePrediction",
         "title": "Sidekick: enable prediction"
       }
