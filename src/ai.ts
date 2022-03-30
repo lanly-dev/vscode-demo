@@ -10,7 +10,7 @@ export default class AI {
 
   static init() {
     this.openai = undefined
-    const apiKey = <string>workspace.getConfiguration().get('sidekick.openAiApiKey')
+    const apiKey = <string>workspace.getConfiguration('sidekick').get('openAiApiKey')
     if (!apiKey) {
       window
         .showInformationMessage('Please add OpenAI token to the settings', 'Setting')
@@ -34,12 +34,12 @@ export default class AI {
 
     const prompt = 'The time complexity of this function is\n\n' + input
     const response = await this.openai.createCompletion('text-davinci-002', {
+      frequency_penalty: 0,
+      max_tokens: 64,
+      presence_penalty: 0,
       prompt,
       temperature: 0,
-      max_tokens: 64,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
+      top_p: 1
     })
     console.log(response)
     return response.data.choices?.[0].text?.replaceAll('\n', '')
@@ -51,12 +51,12 @@ export default class AI {
 
     const prompt = 'Use list comprehension to convert this into one line of JavaScript:\n\n' + input
     const response = await this.openai.createCompletion('code-davinci-002', {
+      frequency_penalty: 0,
+      max_tokens: 4096,
+      presence_penalty: 0,
       prompt,
       temperature: 0,
-      max_tokens: 60,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
+      top_p: 1
     })
     return response
   }
@@ -65,24 +65,27 @@ export default class AI {
     this.init()
     if (!this.openai) return
 
-    const completion = await this.openai.createCompletion('text-davinci-001', { prompt })
-    return completion.data.choices
+    const n = workspace.getConfiguration('sidekick').get('nPredictions', 1)
+    const completion = await this.openai.createCompletion('text-davinci-001', { prompt, n })
+    return completion.data.choices ?? []
   }
 
-  static async refactor(input: string) {
+  static async refactor(input: string, n: number) {
     this.init()
     if (!this.openai) return
 
-    const prompt = 'Refactor this code:\n\n' + input
+    const prompt = '// Rewrite this function as efficient function\n\n' + input + '\n\n// efficient function:'
     const response = await this.openai.createCompletion('code-davinci-002', {
+      frequency_penalty: 0,
+      max_tokens: 4096,
+      n,
+      presence_penalty: 0,
       prompt,
       temperature: 0,
-      max_tokens: 60,
       top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
     })
-    return response
+    if (!response.data.choices) return []
+    return response.data.choices?.map(elm => elm.text! )
   }
 
   static async makeHelper() {}

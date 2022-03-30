@@ -62,26 +62,26 @@
             "type": "string",
             "default": null,
             "description": "OpenAI API key"
-          }
-        }
-      },
-      {
-        "title": "sidekick",
-        "properties": {
+          },
           "sidekick.enableComplexity": {
             "type": "boolean",
             "default": true,
             "description": "Enable complexity CodeLens"
-          }
-        }
-      },
-      {
-        "title": "sidekick",
-        "properties": {
+          },
           "sidekick.enablePrediction": {
             "type": "boolean",
             "default": true,
             "description": "Enable prediction for workspace"
+          },
+          "sidekick.nPredictions": {
+            "type": "integer",
+            "default": 3,
+            "description": "Number of predictions"
+          },
+          "sidekick.nRefactors": {
+            "type": "integer",
+            "default": 3,
+            "description": "Number of refactors"
           }
         }
       }

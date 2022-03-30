@@ -20,10 +20,9 @@ export default class Provider implements CodeLensProvider {
   private startRegex: RegExp = /\{/g
 
   private currRefRange: Range | undefined
-  private currText: string | undefined
-
-  private textSaves: string[] = []
-  private currentIndex: number = -1
+  private currText: string = ''
+  private currChoices: string[] | undefined
+  private currChoiceIndex: number = 0
 
   private _onDidChangeCodeLenses: EventEmitter<void> = new EventEmitter<void>()
   readonly onDidChangeCodeLenses: Event<void> = this._onDidChangeCodeLenses.event
@@ -75,17 +74,18 @@ export default class Provider implements CodeLensProvider {
       )
     }
     if (this.currRefRange) {
-      const prevCmd = this.textSaves.length ? 'sidekick.refactor.previous' : ''
+      const prevCmd = this.currChoiceIndex ? 'sidekick.refactor.previous' : ''
       this.codeLenses.push(
         new CodeLens(this.currRefRange, {
           title: 'Previous',
           command: prevCmd
         })
       )
+      const nextCmd = this.currChoiceIndex + 1 !== this.currChoices?.length ? 'sidekick.refactor.next' : ''
       this.codeLenses.push(
         new CodeLens(this.currRefRange, {
           title: 'Next',
-          command: 'sidekick.refactor.next'
+          command: nextCmd
         })
       )
       this.codeLenses.push(
@@ -98,40 +98,60 @@ export default class Provider implements CodeLensProvider {
     return this.codeLenses
   }
 
-  startRefactor(range: Range, currText: string) {
+  async startRefactor(range: Range, currText: string) {
     this.currRefRange = range
     this.currText = currText
+    await this.getRefactors()
+    this.replace()
   }
 
   nextRefactor() {
-    this.currentIndex++
+    this.currChoiceIndex++
+    this.replace()
   }
 
   prevRefactor() {
-    this.currentIndex--
+    this.currChoiceIndex--
+    this.replace()
   }
 
   cancelRefactor() {
+    this.currChoiceIndex = 0
+    this.currChoices = []
+    this.replace('cancel')
     this.currRefRange = undefined
     this._onDidChangeCodeLenses.fire()
   }
 
-  replace() { }
-
-  select(range: Range) {
-    new Selection(range.start, range.end)
+  replace(action?: string) {
+    if (!this.currChoices) return
+    const text = action ? this.currText : this.currChoices[this.currChoiceIndex]
+    console.log(this.currChoices)
     const activeTe = window.activeTextEditor
-    if (activeTe) activeTe.selection = new Selection(range.start, range.end)
-
+    activeTe?.edit(editBuilder => {
+      if (!this.currRefRange) return
+      editBuilder.replace(this.currRefRange, text)
+      const lines = text.split(/\r\n|\r|\n/)
+      const lCount = lines.length
+      const lChar = lines.pop()?.length
+      activeTe.selection = new Selection(this.currRefRange.start, new Position(lCount, lChar ?? 0))
+      this._onDidChangeCodeLenses.fire()
+    })
   }
 
-  private async getNewRefactor() {
-    if(!this.currText) return
-    const choices = Ai.refactor(this.currText)
+  select(range: Range) {
+    const activeTe = window.activeTextEditor
+    if (activeTe) activeTe.selection = new Selection(range.start, range.end)
+  }
+
+  private async getRefactors() {
+    if (!this.currText) return
+    console.log(this.currText)
+    const n = workspace.getConfiguration('sidekick').get('nRefactors', 1)
+    this.currChoices = await Ai.refactor(this.currText, n)
   }
 
   private findEnd(document: TextDocument, fullText: string, startPosition: Position) {
-
     const endRegex = new RegExp(this.endRegex)
     let matches
     while ((matches = endRegex.exec(fullText)) !== null) {
