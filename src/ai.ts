@@ -52,7 +52,7 @@ export default class AI {
     const prompt = 'Use list comprehension to convert this into one line of JavaScript:\n\n' + input
     const response = await this.openai.createCompletion('code-davinci-002', {
       frequency_penalty: 0,
-      max_tokens: 4096,
+      max_tokens: 60,
       presence_penalty: 0,
       prompt,
       temperature: 0,
@@ -77,7 +77,7 @@ export default class AI {
     const prompt = '// Rewrite this function as efficient function\n\n' + input + '\n\n// efficient function:'
     const response = await this.openai.createCompletion('code-davinci-002', {
       frequency_penalty: 0,
-      max_tokens: 4096,
+      max_tokens: 700,
       n,
       presence_penalty: 0,
       prompt,

@@ -40,6 +40,7 @@ export default class Provider implements CodeLensProvider {
     let matches
     while ((matches = regex.exec(fullText)) !== null) {
       const line = document.lineAt(document.positionAt(matches.index).line)
+      if (line.text.includes('//')) continue
       const indexOf = line.text.indexOf(matches[0])
       const indexOfNon = line.firstNonWhitespaceCharacterIndex
 
@@ -146,7 +147,6 @@ export default class Provider implements CodeLensProvider {
 
   private async getRefactors() {
     if (!this.currText) return
-    console.log(this.currText)
     const n = workspace.getConfiguration('sidekick').get('nRefactors', 1)
     this.currChoices = await Ai.refactor(this.currText, n)
   }
