@@ -39,6 +39,10 @@
         "title": "Sidekick: start refactor"
       },
       {
+        "command": "sidekick.refactor.select",
+        "title": "Sidekick: select code block"
+      },
+      {
         "command": "sidekick.refactor.cancel",
         "title": "Sidekick: cancel refactor"
       }

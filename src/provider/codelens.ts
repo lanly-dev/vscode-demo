@@ -6,7 +6,9 @@ import {
   EventEmitter,
   Position,
   Range,
+  Selection,
   TextDocument,
+  window,
   workspace
 } from 'vscode'
 
@@ -17,7 +19,11 @@ export default class Provider implements CodeLensProvider {
   private endRegex: RegExp = /\}/g
   private startRegex: RegExp = /\{/g
 
-  private currRefRange: Range | null = null
+  private currRefRange: Range | undefined
+  private currText: string | undefined
+
+  private textSaves: string[] = []
+  private currentIndex: number = -1
 
   private _onDidChangeCodeLenses: EventEmitter<void> = new EventEmitter<void>()
   readonly onDidChangeCodeLenses: Event<void> = this._onDidChangeCodeLenses.event
@@ -29,9 +35,7 @@ export default class Provider implements CodeLensProvider {
   }
 
   async provideCodeLenses(document: TextDocument, token: CancellationToken): Promise<CodeLens[]> {
-    if (!workspace.getConfiguration('sidekick').get('enableComplexity')) return []
     this.codeLenses = []
-
     const regex = new RegExp(this.startRegex)
     const fullText = document.getText()
     let matches
@@ -45,46 +49,48 @@ export default class Provider implements CodeLensProvider {
 
       // TODO: format tooltip
       const endInfo = this.findEnd(document, fullText, realStartPosition)
-
       const range = new Range(realStartPosition, endInfo?.position!)
       const content = endInfo?.text
-      if (!content) continue
-      // const bigO = await Ai.complexity(content)
 
-      if (range) {
+      if (!content || !range) continue
+
+      if (workspace.getConfiguration('sidekick').get('enableComplexity')) {
+        // const bigO = await Ai.complexity(content)
         this.codeLenses.push(
           new CodeLens(range, {
             title: 'bigO'!,
             tooltip: endInfo?.text,
-            command: ''
-          })
-        )
-        if (this.currRefRange && this.currRefRange.start.line === range.start.line) continue
-        this.codeLenses.push(
-          new CodeLens(range, {
-            title: 'refactor'!,
-            command: 'sidekick.refactor.start',
+            command: 'sidekick.refactor.select',
             arguments: [range]
           })
         )
       }
+      if (this.currRefRange && this.currRefRange.start.line === range.start.line) continue
+      this.codeLenses.push(
+        new CodeLens(range, {
+          title: 'refactor'!,
+          command: 'sidekick.refactor.start',
+          arguments: [range, endInfo.text]
+        })
+      )
     }
     if (this.currRefRange) {
+      const prevCmd = this.textSaves.length ? 'sidekick.refactor.previous' : ''
       this.codeLenses.push(
         new CodeLens(this.currRefRange, {
-          title: 'Previous'!,
-          command: 'sidekick.refactor.previous'
+          title: 'Previous',
+          command: prevCmd
         })
       )
       this.codeLenses.push(
         new CodeLens(this.currRefRange, {
-          title: 'Next'!,
+          title: 'Next',
           command: 'sidekick.refactor.next'
         })
       )
       this.codeLenses.push(
         new CodeLens(this.currRefRange, {
-          title: 'Cancel'!,
+          title: 'Cancel',
           command: 'sidekick.refactor.cancel'
         })
       )
@@ -92,26 +98,40 @@ export default class Provider implements CodeLensProvider {
     return this.codeLenses
   }
 
-  startRefactor(range: Range) {
+  startRefactor(range: Range, currText: string) {
     this.currRefRange = range
+    this.currText = currText
   }
 
   nextRefactor() {
-    // save
+    this.currentIndex++
   }
 
-  prevRefactor() {}
+  prevRefactor() {
+    this.currentIndex--
+  }
 
   cancelRefactor() {
-    this.currRefRange = null
+    this.currRefRange = undefined
     this._onDidChangeCodeLenses.fire()
   }
 
-  replace() {}
+  replace() { }
 
-  select() {}
+  select(range: Range) {
+    new Selection(range.start, range.end)
+    const activeTe = window.activeTextEditor
+    if (activeTe) activeTe.selection = new Selection(range.start, range.end)
+
+  }
+
+  private async getNewRefactor() {
+    if(!this.currText) return
+    const choices = Ai.refactor(this.currText)
+  }
 
   private findEnd(document: TextDocument, fullText: string, startPosition: Position) {
+
     const endRegex = new RegExp(this.endRegex)
     let matches
     while ((matches = endRegex.exec(fullText)) !== null) {

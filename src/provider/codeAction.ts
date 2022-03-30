@@ -2,7 +2,6 @@ import {
   CodeAction,
   CodeActionKind,
   CodeActionProvider,
-  CodeLensProvider,
   Range,
   TextDocument,
   WorkspaceEdit
