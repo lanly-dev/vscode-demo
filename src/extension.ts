@@ -2,7 +2,7 @@ import { ExtensionContext, commands, languages, workspace } from 'vscode'
 import Ai from './ai'
 import Buttons from './buttons'
 import Utility from './utility'
-// import CaProvider from './provider/codeAction'
+import CaProvider from './provider/codeAction'
 import ClProvider from './provider/codeLens'
 import IcProvider from './provider/inlineCompletion'
 
@@ -10,7 +10,7 @@ let buttons: Buttons | null = null
 
 export function activate(context: ExtensionContext) {
   buttons = new Buttons()
-  // const { providedCodeActionKinds } = CaProvider
+  const { providedCodeActionKinds } = CaProvider
   const clp = new ClProvider()
   Ai.init()
   const rc = commands.registerCommand
@@ -24,7 +24,7 @@ export function activate(context: ExtensionContext) {
     rc('sidekick.refactor.start', (range, text) => clp.startRefactor(range, text)),
     rc('sidekick.refactor.select', (range) => clp.select(range)),
     rc('sidekick.refactor', () => Ai.oneLine('helloworld')),
-    // languages.registerCodeActionsProvider('*', new CaProvider, { providedCodeActionKinds }),
+    languages.registerCodeActionsProvider('*', new CaProvider, { providedCodeActionKinds }),
     languages.registerCodeLensProvider('*', clp),
     languages.registerInlineCompletionItemProvider({ pattern: '**' }, new IcProvider())
   ])

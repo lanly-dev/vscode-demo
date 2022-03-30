@@ -45,6 +45,26 @@ export default class AI {
     return response.data.choices?.[0].text?.replaceAll('\n', '')
   }
 
+  static async generate(prompt: string) {
+    this.init()
+    if (!this.openai) return
+
+    const response = await this.openai.createCompletion("code-davinci-002", {
+      prompt,
+      temperature: 0,
+      max_tokens: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    })
+    if (!response.data.choices) return
+    return response.data.choices[0].text
+  }
+
+  static async makeHelper(prompt: string) {
+    return ''
+  }
+
   static async oneLine(input: string) {
     this.init()
     if (!this.openai) return
@@ -77,7 +97,7 @@ export default class AI {
     const prompt = '// Rewrite this function as efficient function\n\n' + input + '\n\n// efficient function:'
     const response = await this.openai.createCompletion('code-davinci-002', {
       frequency_penalty: 0,
-      max_tokens: 700,
+      max_tokens: 512,
       n,
       presence_penalty: 0,
       prompt,
@@ -87,6 +107,4 @@ export default class AI {
     if (!response.data.choices) return []
     return response.data.choices?.map(elm => elm.text! )
   }
-
-  static async makeHelper() {}
 }

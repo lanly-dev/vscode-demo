@@ -6,26 +6,16 @@ import {
   TextDocument,
   WorkspaceEdit
 } from 'vscode'
+import AI from '../ai'
 
 export default class Provider implements CodeActionProvider {
-  static readonly providedCodeActionKinds = [CodeActionKind.QuickFix]
+  static readonly providedCodeActionKinds = [CodeActionKind.Refactor]
 
-  provideCodeActions(document: TextDocument, range: Range): CodeAction[] | undefined {
-    if (!this.isFunction(document, range)) return
-    return [this.refactor(document, range), this.goToSetting()]
-  }
-
-  private isFunction(document: TextDocument, range: Range) {
+  async provideCodeActions(document: TextDocument, range: Range): Promise<CodeAction[] | undefined> {
     const start = range.start
     const line = document.lineAt(start.line)
-    return line.text.includes('function')
-  }
-
-  private refactor(document: TextDocument, range: Range): CodeAction {
-    const fix = new CodeAction(`Sidekick: refactor function`, CodeActionKind.Refactor)
-    fix.edit = new WorkspaceEdit()
-    fix.edit.replace(document.uri, new Range(range.start, range.start.translate(0, 2)), 'something')
-    return fix
+    if (!line.text.includes('//')) return
+    return [await this.generateCode(document, range, line.text), this.goToSetting()]
   }
 
   private goToSetting(): CodeAction {
@@ -33,9 +23,17 @@ export default class Provider implements CodeActionProvider {
     action.command = {
       command: 'workbench.action.openSettings',
       title: 'Sidekick: setting',
-      tooltip: 'Go to setting.',
+      tooltip: `Go to Sidekick's setting`,
       arguments: ['sidekick']
     }
+    return action
+  }
+
+  private async generateCode(document: TextDocument, range: Range, instruction: string): Promise<CodeAction> {
+    const action = new CodeAction(`Sidekick generate code`, CodeActionKind.Refactor)
+    action.edit = new WorkspaceEdit()
+    const newText = await AI.generate(instruction)
+    action.edit.insert(document.uri, range.start, newText ?? '')
     return action
   }
 }
