@@ -18,5 +18,6 @@
     "openai",
     "postdownload",
     "vscodeignore"
-  ]
+  ],
+  "sidekick.enablePrediction": false
 }

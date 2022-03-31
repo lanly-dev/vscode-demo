@@ -1,11 +1,14 @@
 .gitignore
 .token
 .vscode/**
+*.vsix
 **/.eslintrc.json
 **/*.map
 **/*.ts
 **/tsconfig.json
 node_modules/**
+note.md
+project-story.md
 src/**
 vsc-extension-quickstart.md
 webpack.config.js

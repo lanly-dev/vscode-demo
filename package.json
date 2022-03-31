@@ -5,6 +5,8 @@
   "name": "sidekick",
   "displayName": "Sidekick",
   "description": "A prefect AI Sidekick for solo leveling developer",
+  "homepage": "https://github.com/lanly-dev/vscode-sidekick",
+  "publisher": "lanly-dev",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.66.0"

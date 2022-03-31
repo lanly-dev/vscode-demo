@@ -59,11 +59,10 @@ export default class Provider implements CodeLensProvider {
         tooltip = lineArray.map(l => l.slice(indexOfNon)).join('\n')
       }
       if (workspace.getConfiguration('sidekick').get('enableComplexity')) {
-        // const bigO = await Ai.complexity(content)
+        const bigO = await Ai.complexity(content)
         this.codeLenses.push(
           new CodeLens(range, {
-            // TODO enable bigO
-            title: 'bigO',
+            title: bigO!,
             tooltip,
             command: 'sidekick.refactor.select',
             arguments: [range]
