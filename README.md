@@ -10,6 +10,7 @@ This extension is using *Inline Completion* which is a [proposed API](https://co
 ### Create VSIX for local installation 
 Run the npm commands: `npm run vsce-package`
 
+## [Demo video](https://drive.google.com/file/d/1RlQfJGHPIptxg7SGOPqfLz4wCLQv0iEl/view?usp=sharing)
 ## Displays the complexity of codeblocks
 ![](./media/complexity.PNG)
 
