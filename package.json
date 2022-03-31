@@ -7,7 +7,7 @@
   "description": "",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.65.0"
+    "vscode": "^1.66.0"
   },
   "categories": [
     "Other"
@@ -20,19 +20,23 @@
     "commands": [
       {
         "command": "sidekick.setting",
-        "title": "Sidekick: open setting"
+        "title": "Go to setting"
       },
       {
         "command": "sidekick.oneLine",
-        "title": "Sidekick: one Line"
+        "title": "OneLine"
+      },
+      {
+        "command": "sidekick.refactor",
+        "title": "Refactor"
+      },
+      {
+        "command": "sidekick.helper",
+        "title": "Create helper function"
       },
       {
         "command": "sidekick.prediction.enable",
         "title": "Sidekick: enable prediction"
-      },
-      {
-        "command": "sidekick.refactor",
-        "title": "Sidekick: refactor"
       },
       {
         "command": "sidekick.refactor.start",
@@ -52,8 +56,33 @@
         {
           "command": "sidekick.setting"
         }
+      ],
+      "editor/context": [
+        {
+					"submenu": "sidekick"
+				}
+      ],
+      "sidekick": [
+        {
+          "submenu": "sidekick",
+          "command": "sidekick.helper"
+        },
+        {
+          "submenu": "sidekick",
+          "command": "sidekick.oneLine"
+        },
+        {
+          "submenu": "sidekick",
+          "command": "sidekick.refactor"
+        }
       ]
     },
+    "submenus": [
+			{
+				"id": "sidekick",
+				"label": "sidekick"
+			}
+		],
     "configuration": [
       {
         "title": "sidekick",
