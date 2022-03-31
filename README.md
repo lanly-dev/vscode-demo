@@ -1,5 +1,5 @@
 # Sidekick - Visual Studio Code Extension
-> A prefect AI Sidekick for solo leveling developer
+> A perfect AI Sidekick for a solo leveling developer
 
 ### [DevRev Hackathon - Coding with AI](https://devrevhack0.devpost.com)
 > Use AI to code and automate Developer tasks
@@ -10,3 +10,14 @@ This extension is using *Inline Completion* which is a [proposed API](https://co
 ### Create VSIX for local installation 
 Run the npm commands: `npm run vsce-package`
 
+## Displays the complexity of codeblocks
+![](./media/complexity.PNG)
+
+## Code action (yellow lightbulb)
+![](./media/code-action.PNG)
+
+## Inline completion
+![](./media/inline-completion.PNG)
+
+## Submenu actions for selected text
+![](./media/submenu.PNG)
