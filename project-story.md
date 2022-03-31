@@ -18,3 +18,6 @@ A lot! For the technical side, I learned a bunch of Visual Studio Code APIs. On 
 
 ## What's next for Sidekick
 This project serves as a prototype for me to explore how I could leverage AI to generate code snippets conveniently. It was fun to learn about new VSCode APIs and the results from OpenAI. I don't have any plan for what to do next with the Sidekick extension unless I can improve the query result from OpenAI APIs.
+
+## Demo video link
+https://drive.google.com/file/d/1RlQfJGHPIptxg7SGOPqfLz4wCLQv0iEl/view?usp=sharing

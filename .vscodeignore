@@ -6,6 +6,7 @@
 **/*.map
 **/*.ts
 **/tsconfig.json
+demo
 node_modules/**
 note.md
 project-story.md
