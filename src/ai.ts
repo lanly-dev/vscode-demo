@@ -52,7 +52,8 @@ export default class AI {
     const response = await this.openai.createCompletion("code-davinci-002", {
       prompt,
       temperature: 0,
-      max_tokens: 256,
+      max_tokens: 60,
+      n: 1,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -61,8 +62,22 @@ export default class AI {
     return response.data.choices[0].text
   }
 
-  static async makeHelper(prompt: string) {
-    return ''
+  static async makeHelper(input: string) {
+    this.init()
+    if (!this.openai) return
+
+    const prompt = 'Use list comprehension to convert this into one line of JavaScript:\n\n' + input
+    const response = await this.openai.createCompletion('code-davinci-002', {
+      frequency_penalty: 0,
+      max_tokens: 60,
+      n: 1,
+      presence_penalty: 0,
+      prompt,
+      temperature: 0,
+      top_p: 1
+    })
+    if (!response.data.choices) return
+    return response.data.choices[0].text
   }
 
   static async oneLine(input: string) {
@@ -73,12 +88,14 @@ export default class AI {
     const response = await this.openai.createCompletion('code-davinci-002', {
       frequency_penalty: 0,
       max_tokens: 60,
+      n: 1,
       presence_penalty: 0,
       prompt,
       temperature: 0,
       top_p: 1
     })
-    return response
+    if (!response.data.choices) return
+    return response.data.choices[0].text
   }
 
   static async predict(prompt: string) {

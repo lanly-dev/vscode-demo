@@ -68,7 +68,7 @@ export default class Provider implements CodeLensProvider {
       if (this.currRefRange && this.currRefRange.start.line === range.start.line) continue
       this.codeLenses.push(
         new CodeLens(range, {
-          title: 'refactor'!,
+          title: 'Refactor'!,
           command: 'sidekick.refactor.start',
           arguments: [range, endInfo.text]
         })

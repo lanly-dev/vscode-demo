@@ -14,10 +14,11 @@ export function activate(context: ExtensionContext) {
   Ai.init()
   const rc = commands.registerCommand
   context.subscriptions.concat([
-    rc('sidekick.helper', () => helper()),
-    rc('sidekick.oneLine', () => oneLine()),
-    rc('sidekick.refactor', () => refactor()),
-  
+    rc('sidekick.generate', () => action('G')),
+    rc('sidekick.helper', () => action('H')),
+    rc('sidekick.oneLine', () => action('O')),
+    rc('sidekick.refactor', () => action('R')),
+
     rc('sidekick.prediction.enable', () => enableFeature('enablePrediction')),
     rc('sidekick.refactor.cancel', () => clp.cancelRefactor()),
     rc('sidekick.refactor.next', () => clp.nextRefactor()),
@@ -38,16 +39,19 @@ async function enableFeature(setting: string) {
   if (buttons) buttons.refresh()
 }
 
-function oneLine() {
-  throw new Error('Function not implemented.')
+async function action(flag: string) {
+  const selectedText = Utility.getTextSelection()
+  if (!selectedText) return
+  let newText
+  if (flag === 'G') newText = await Ai.generate(selectedText)
+  else if (flag === 'H') newText = await Ai.makeHelper(selectedText)
+  else if (flag === 'O') newText = await Ai.oneLine(selectedText)
+  else {
+    const textArray = await Ai.refactor(selectedText, 1)
+    newText = textArray ? textArray[0] : undefined
+  }
+  if (!newText) return
+  Utility.insertTextRightAfter(newText)
 }
 
-function refactor() {
-  throw new Error('Function not implemented.')
-}
-
-function helper() {
-  throw new Error('Function not implemented.')
-}
-
-export function deactivate() {}
+export function deactivate() { }

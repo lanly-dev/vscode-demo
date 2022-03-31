@@ -20,19 +20,23 @@
     "commands": [
       {
         "command": "sidekick.setting",
-        "title": "Go to setting"
+        "title": "Sidekick setting"
+      },
+      {
+        "command": "sidekick.generate",
+        "title": "Generate code"
       },
       {
         "command": "sidekick.oneLine",
-        "title": "OneLine"
-      },
-      {
-        "command": "sidekick.refactor",
-        "title": "Refactor"
+        "title": "Make one line code"
       },
       {
         "command": "sidekick.helper",
         "title": "Create helper function"
+      },
+      {
+        "command": "sidekick.refactor",
+        "title": "Refactor"
       },
       {
         "command": "sidekick.prediction.enable",
@@ -60,9 +64,16 @@
       "editor/context": [
         {
 					"submenu": "sidekick"
+				},
+        {
+					"command": "sidekick.setting"
 				}
       ],
       "sidekick": [
+        {
+          "submenu": "sidekick",
+          "command": "sidekick.generate"
+        },
         {
           "submenu": "sidekick",
           "command": "sidekick.helper"
@@ -80,7 +91,7 @@
     "submenus": [
 			{
 				"id": "sidekick",
-				"label": "sidekick"
+				"label": "Sidekick"
 			}
 		],
     "configuration": [
