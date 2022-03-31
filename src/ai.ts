@@ -41,7 +41,6 @@ export default class AI {
       temperature: 0,
       top_p: 1
     })
-    console.log(response)
     return response.data.choices?.[0].text?.replaceAll('\n', '')
   }
 
@@ -50,13 +49,12 @@ export default class AI {
     if (!this.openai) return
 
     const response = await this.openai.createCompletion("code-davinci-002", {
+      frequency_penalty: 2,
+      max_tokens: 512,
+      presence_penalty: 2,
       prompt,
       temperature: 0,
-      max_tokens: 60,
-      n: 1,
       top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
     })
     if (!response.data.choices) return
     return response.data.choices[0].text
@@ -66,12 +64,11 @@ export default class AI {
     this.init()
     if (!this.openai) return
 
-    const prompt = 'Use list comprehension to convert this into one line of JavaScript:\n\n' + input
+    const prompt = 'Make helper function from this snipet\n\n' + input
     const response = await this.openai.createCompletion('code-davinci-002', {
-      frequency_penalty: 0,
-      max_tokens: 60,
-      n: 1,
-      presence_penalty: 0,
+      frequency_penalty: 2,
+      max_tokens: 512,
+      presence_penalty: 2,
       prompt,
       temperature: 0,
       top_p: 1
@@ -84,12 +81,11 @@ export default class AI {
     this.init()
     if (!this.openai) return
 
-    const prompt = 'Use list comprehension to convert this into one line of JavaScript:\n\n' + input
+    const prompt = 'Use list comprehension to convert this into one line of Typescript:\n\n' + input
     const response = await this.openai.createCompletion('code-davinci-002', {
-      frequency_penalty: 0,
-      max_tokens: 60,
-      n: 1,
-      presence_penalty: 0,
+      frequency_penalty: 2,
+      max_tokens: 512,
+      presence_penalty: 2,
       prompt,
       temperature: 0,
       top_p: 1
@@ -111,17 +107,17 @@ export default class AI {
     this.init()
     if (!this.openai) return
 
-    const prompt = '// Rewrite this function as efficient function\n\n' + input + '\n\n// efficient function:'
+    const prompt = '// Rewrite this function to be more efficient\n\n' + input + '\n\n// efficient function:'
     const response = await this.openai.createCompletion('code-davinci-002', {
-      frequency_penalty: 0,
+      frequency_penalty: 2,
       max_tokens: 512,
       n,
-      presence_penalty: 0,
+      presence_penalty: 2,
       prompt,
       temperature: 0,
       top_p: 1,
     })
     if (!response.data.choices) return []
-    return response.data.choices?.map(elm => elm.text! )
+    return response.data.choices?.map(elm => elm.text!)
   }
 }

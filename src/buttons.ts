@@ -14,7 +14,7 @@ export default class Buttons {
   refresh() {
     const cf = workspace.getConfiguration()
     const flag = cf.get('sidekick.enablePrediction')
-    if (flag) this.enablePredictionBtn.text = 'Enable'
-    else this.enablePredictionBtn.text = 'Disable'
+    if (flag) this.enablePredictionBtn.text = '$(check) Prediction'
+    else this.enablePredictionBtn.text = '$(close) Prediction'
   }
 }

@@ -41,25 +41,30 @@ export default class Provider implements CodeLensProvider {
     while ((matches = regex.exec(fullText)) !== null) {
       const line = document.lineAt(document.positionAt(matches.index).line)
       if (line.text.includes('//')) continue
-      const indexOf = line.text.indexOf(matches[0])
+      // const indexOf = line.text.indexOf(matches[0])
       const indexOfNon = line.firstNonWhitespaceCharacterIndex
 
-      const startPosition = new Position(line.lineNumber, indexOf)
-      const realStartPosition = new Position(line.lineNumber, indexOfNon)
+      // const startPosition = new Position(line.lineNumber, indexOf)
+      // const realStartPosition = new Position(line.lineNumber, indexOfNon)
+      const zeroStart = new Position(line.lineNumber, 0)
 
-      // TODO: format tooltip
-      const endInfo = this.findEnd(document, fullText, realStartPosition)
-      const range = new Range(realStartPosition, endInfo?.position!)
+      const endInfo = this.findEnd(document, fullText, zeroStart)
+      const range = new Range(zeroStart, endInfo?.position!)
       const content = endInfo?.text
 
       if (!content || !range) continue
-
+      let tooltip = content
+      if (indexOfNon) {
+        const lineArray = content.split(/\r?\n/)
+        tooltip = lineArray.map(l => l.slice(indexOfNon)).join('\n')
+      }
       if (workspace.getConfiguration('sidekick').get('enableComplexity')) {
         // const bigO = await Ai.complexity(content)
         this.codeLenses.push(
           new CodeLens(range, {
-            title: 'bigO'!,
-            tooltip: endInfo?.text,
+            // TODO enable bigO
+            title: 'bigO',
+            tooltip,
             command: 'sidekick.refactor.select',
             arguments: [range]
           })
@@ -68,7 +73,7 @@ export default class Provider implements CodeLensProvider {
       if (this.currRefRange && this.currRefRange.start.line === range.start.line) continue
       this.codeLenses.push(
         new CodeLens(range, {
-          title: 'Refactor'!,
+          title: 'Refactor',
           command: 'sidekick.refactor.start',
           arguments: [range, endInfo.text]
         })

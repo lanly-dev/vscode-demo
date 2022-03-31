@@ -4,7 +4,7 @@
   ],
   "name": "sidekick",
   "displayName": "Sidekick",
-  "description": "",
+  "description": "A prefect AI Sidekick for solo leveling developer",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.66.0"
